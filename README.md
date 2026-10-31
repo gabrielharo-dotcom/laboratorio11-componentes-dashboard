@@ -107,3 +107,5 @@ Para Vercel, importar este repositorio dos veces, usando como Root Directory `ne
 - https://ui.shadcn.com/docs/components/alert
 - https://ui.shadcn.com/docs/components/calendar
 - https://ui.shadcn.com/docs/components/pagination
+
+Estado de Vercel: pendiente de reautenticación por código enviado al correo de la cuenta. No se ha verificado una URL desplegada. El informe HTML y Markdown está en `informe/`. La revisión móvil y las capturas adicionales de Resumen, Proyectos y del árbol de componentes quedaron pendientes al detenerse el control de la interfaz.
