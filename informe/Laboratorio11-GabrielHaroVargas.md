@@ -110,7 +110,7 @@ Ambas aplicaciones respondieron HTTP 200 y completaron npm run build y npm run l
 
 
 
-Dashboard publicado y verificado en Vercel: https://nexo-lab11.vercel.app/dashboard. Se comprobó la carga del dashboard en producción. La publicación adicional de la galería next-components-styling está pendiente de un nuevo código de verificación de Vercel.
+Dashboard publicado y verificado en Vercel: https://nexo-lab11.vercel.app/dashboard. Se comprobó la carga del dashboard en producción. Galería de componentes publicada y verificada: https://componentes-lab11.vercel.app/styling. Ambas aplicaciones se desplegaron desde el mismo repositorio utilizando su carpeta raíz correspondiente.
 
 
 
@@ -145,3 +145,7 @@ Dashboard publicado y verificado en Vercel: https://nexo-lab11.vercel.app/dashbo
 ### Carpeta de componentes UI
 
 ![Carpeta de componentes UI](../evidencias/09-componentes-ui.jpg)
+
+### Galería publicada
+
+![Galería publicada](../evidencias/10-galeria-publicada.jpg)

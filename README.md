@@ -108,4 +108,4 @@ Para Vercel, importar este repositorio dos veces, usando como Root Directory `ne
 - https://ui.shadcn.com/docs/components/calendar
 - https://ui.shadcn.com/docs/components/pagination
 
-Dashboard publicado: https://nexo-lab11.vercel.app/dashboard. Verificado en producción y en viewport móvil de 390 × 844, sin desbordamiento horizontal de página. El informe HTML y Markdown y las capturas actualizadas están en `informe/` y `evidencias/`. La publicación adicional de la galería de componentes sigue pendiente de un nuevo código de Vercel.
+Dashboard publicado: https://nexo-lab11.vercel.app/dashboard. Verificado en producción y en viewport móvil de 390 × 844, sin desbordamiento horizontal de página. El informe HTML y Markdown y las capturas actualizadas están en `informe/` y `evidencias/`. Galería publicada y verificada: https://componentes-lab11.vercel.app/styling.
