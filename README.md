@@ -108,4 +108,4 @@ Para Vercel, importar este repositorio dos veces, usando como Root Directory `ne
 - https://ui.shadcn.com/docs/components/calendar
 - https://ui.shadcn.com/docs/components/pagination
 
-Estado de Vercel: pendiente de reautenticación por código enviado al correo de la cuenta. No se ha verificado una URL desplegada. El informe HTML y Markdown está en `informe/`. La revisión móvil y las capturas adicionales de Resumen, Proyectos y del árbol de componentes quedaron pendientes al detenerse el control de la interfaz.
+Dashboard publicado: https://nexo-lab11.vercel.app/dashboard. Verificado en producción y en viewport móvil de 390 × 844, sin desbordamiento horizontal de página. El informe HTML y Markdown y las capturas actualizadas están en `informe/` y `evidencias/`. La publicación adicional de la galería de componentes sigue pendiente de un nuevo código de Vercel.

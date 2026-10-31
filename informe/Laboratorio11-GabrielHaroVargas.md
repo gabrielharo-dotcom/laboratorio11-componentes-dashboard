@@ -94,7 +94,7 @@ Los registros viven en memoria y además se conservan en localStorage bajo la cl
 
 ## Comprobaciones realizadas
 
-Ambas aplicaciones respondieron HTTP 200 y completaron npm run build y npm run lint. Las nueve pruebas npm test verificaron métricas, creación y edición de proyectos, validaciones y fechas, CRUD de miembros, CRUD de tareas, pertenencia del responsable, eliminación en cascada, limpieza de responsables y retiro de miembros de proyectos. En navegador se verificaron CRUD de proyectos, miembros y tareas, persistencia tras recargar, paginación, actualización de métricas, calendario y guardado de configuración. En la galería se verificaron error de correo, carga simulada y alerta de envío válido. La revisión móvil y las capturas adicionales de Resumen, Proyectos y del árbol de componentes no se completaron al detenerse el control de la interfaz.
+Ambas aplicaciones respondieron HTTP 200 y completaron npm run build y npm run lint. Las nueve pruebas npm test verificaron métricas, creación y edición de proyectos, validaciones y fechas, CRUD de miembros, CRUD de tareas, pertenencia del responsable, eliminación en cascada, limpieza de responsables y retiro de miembros de proyectos. En navegador se verificaron CRUD de proyectos, miembros y tareas, persistencia tras recargar, paginación, actualización de métricas, calendario y guardado de configuración. En la galería se verificaron error de correo, carga simulada y alerta de envío válido. Se completó la revisión del dashboard publicado con viewport de 390 × 844: el ancho del documento fue 375 px frente a 390 px de viewport, sin desbordamiento horizontal de la página. Se añadieron capturas de Resumen, Proyectos y el árbol de componentes UI en GitHub.
 
 
 
@@ -110,7 +110,7 @@ Ambas aplicaciones respondieron HTTP 200 y completaron npm run build y npm run l
 
 
 
-Vercel: publicación pendiente de reautenticación de la cuenta por correo. Se configuró el proyecto nexo-lab11 con raíz next-shadcn-ui, pero Vercel solicitó verificar un código antes de iniciar el despliegue. No hay una URL pública verificada y no se incluye un enlace inventado.
+Dashboard publicado y verificado en Vercel: https://nexo-lab11.vercel.app/dashboard. Se comprobó la carga del dashboard en producción. La publicación adicional de la galería next-components-styling está pendiente de un nuevo código de verificación de Vercel.
 
 
 
@@ -127,3 +127,21 @@ Vercel: publicación pendiente de reautenticación de la cuenta por correo. Se c
 4. Calcular las métricas desde los registros evita inconsistencias. Durante la prueba, completar una tarea incrementó el contador de tareas completadas de 2 a 3; eliminar la tarea de prueba restauró los valores correspondientes.
 
 5. La persistencia local es adecuada para practicar una aplicación con datos en memoria y comprobar el flujo completo. Para un uso real con varios usuarios harían falta una API, una base de datos y control de acceso; las pruebas de integridad preparan esa evolución sin confundir la simulación con un backend real.
+
+## Evidencias adicionales en producción
+
+### Resumen publicado
+
+![Resumen publicado](../evidencias/02-resumen.jpg)
+
+### Proyectos publicados
+
+![Proyectos publicados](../evidencias/02-proyectos.jpg)
+
+### Revisión móvil
+
+![Revisión móvil](../evidencias/08-movil.jpg)
+
+### Carpeta de componentes UI
+
+![Carpeta de componentes UI](../evidencias/09-componentes-ui.jpg)
