@@ -32,7 +32,7 @@ La combinación permite separar los efectos específicos del componente de las d
 
 ## Ejercicio 2 Componentes de shadcn ui
 
-Se instalaron mediante el CLI oficial los componentes button, card, input, label, dialog, tabs, select, badge, avatar, switch, table, checkbox, spinner, alert, calendar, pagination, popover y textarea. Su código se encuentra en next-shadcn-ui/src/components/ui. Se utiliza una paleta verde petróleo y se ofrecen alternativas índigo y rosa en Configuración. La interfaz contiene las cinco secciones requeridas.
+Se instalaron mediante el CLI oficial los componentes button, card, input, label, dialog, tabs, select, badge, avatar, switch, table, checkbox, spinner, alert, calendar, pagination, popover y textarea. Su código se encuentra en next-shadcn-ui/src/components/ui. Se utiliza un diseño propio con barra lateral azul medianoche, portada cobalto, acentos naranja y tarjetas de métricas en lavanda, verde suave, durazno y lila. Se ofrecen alternativas ciruela y lavanda, y terracota y arena en Configuración. La interfaz contiene las cinco secciones requeridas.
 
 
 
@@ -149,3 +149,10 @@ Dashboard publicado y verificado en Vercel: https://nexo-lab11.vercel.app/dashbo
 ### Galería publicada
 
 ![Galería publicada](../evidencias/10-galeria-publicada.jpg)
+
+
+## Rediseño profesional de la tarea
+
+El dashboard se rediseñó con una estructura distinta del ejemplo de la guía. La barra lateral contiene navegación, contadores y progreso; el resumen incorpora portada gráfica, métricas diferenciadas y agenda real de entregas. Los proyectos tienen portadas geométricas y el equipo se presenta como un directorio de tarjetas. Los colores de estado distinguen progreso, pendientes, completados y prioridad. En móvil la navegación cambia a una barra superior y las tarjetas se reorganizan. Se mantuvieron las funciones del laboratorio y la persistencia de los registros.
+
+![Nuevo diseño del dashboard](../evidencias/11-dashboard-redisenado.jpg)

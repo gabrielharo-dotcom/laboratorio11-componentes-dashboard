@@ -32,7 +32,7 @@ Abrir http://localhost:3001/styling. También se puede ejecutar `INICIAR-LAB.cmd
 
 ## Ejercicio 2 y tarea
 
-El dashboard Nexo tiene un tema verde petróleo, con alternativas índigo y rosa en Configuración. Usa componentes oficiales generados por el CLI shadcn/ui, basados en Radix UI.
+El dashboard Nexo tiene un diseño propio con navegación azul medianoche, portada cobalto, acentos naranja y métricas en lavanda, verde suave, durazno y lila. Configuración ofrece tres paletas: cobalto y medianoche, ciruela y lavanda, y terracota y arena. Consulta `DISENO.md` para la justificación visual. Usa componentes oficiales generados por el CLI shadcn/ui, basados en Radix UI.
 
 | Requisito | Implementación |
 | --- | --- |
