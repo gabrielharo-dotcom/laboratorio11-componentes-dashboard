@@ -149,8 +149,7 @@ export function EntityForm({
             {entity ? "Editar" : "Crear"} {title}
           </DialogTitle>
           <DialogDescription>
-            Completa los datos del {title}. Los campos marcados con * son
-            obligatorios.
+            Completa la información. Los campos marcados con * son obligatorios.
           </DialogDescription>
         </DialogHeader>
         <form

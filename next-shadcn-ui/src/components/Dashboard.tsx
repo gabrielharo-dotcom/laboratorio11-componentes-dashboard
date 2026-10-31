@@ -17,6 +17,10 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowRight,
+  Sparkles,
+  ChevronRight,
+  Command,
+  CircleDot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,6 +95,7 @@ const date = (value: string) =>
 function Status({ children }: { children: string }) {
   return (
     <Badge
+      className={`status-badge status-${children.toLowerCase().replaceAll(" ", "-")}`}
       variant={
         children === "Urgente"
           ? "destructive"
@@ -224,639 +229,835 @@ export default function Dashboard() {
       </div>
     );
   return (
-    <div
-      data-theme={data.settings.theme}
-      className="min-h-screen bg-background text-foreground"
-    >
-      <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-4 lg:px-10">
-          <a
-            href="/dashboard"
-            className="flex items-center gap-3 font-bold tracking-tight text-xl"
-          >
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Layers3 className="size-5" />
+    <div data-theme={data.settings.theme} className="dashboard-design">
+      <Tabs
+        value={tab}
+        orientation="vertical"
+        onValueChange={(v) => {
+          setTab(v);
+          setSearch("");
+          setNotice("");
+        }}
+        className="app-shell"
+      >
+        <aside className="workspace-sidebar">
+          <a href="/dashboard" className="brand-lockup">
+            <span className="brand-mark">
+              <Layers3 />
             </span>
-            nexo
-            <span className="ml-3 hidden border-l pl-5 text-xs font-normal tracking-normal text-muted-foreground sm:block">
-              Espacio de proyectos
+            <span>
+              nexo<span className="brand-period">.</span>
+              <small>PROJECT WORKSPACE</small>
             </span>
           </a>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="hidden sm:inline-flex">
-              LAB 11 · Desarrollo Web
-            </Badge>
-            <Avatar>
-              <AvatarFallback className="bg-primary/10 text-primary">
-                GH
-              </AvatarFallback>
-            </Avatar>
+          <div className="workspace-name">
+            <span className="workspace-initial">E</span>
+            <div>
+              <strong>{data.settings.workspace}</strong>
+              <small>Espacio personal</small>
+            </div>
           </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-[1440px] px-5 py-8 lg:px-10 lg:py-10">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[.18em] text-primary">
-              {data.settings.workspace}
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Dashboard de Proyectos<span className="text-primary">.</span>
-            </h1>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Organiza al equipo. Conecta las tareas. Haz que las ideas avancen.
-            </p>
-          </div>
-          <Button
-            onClick={() =>
-              setEditor({
-                kind:
-                  tab === "team"
-                    ? "member"
-                    : tab === "tasks"
-                      ? "task"
-                      : "project",
-              })
-            }
+          <p className="nav-eyebrow">WORKSPACE</p>
+          <TabsList
+            aria-label="Secciones del dashboard"
+            className="workspace-nav"
           >
-            <Plus className="size-4" />
-            {tab === "team"
-              ? "Nuevo miembro"
-              : tab === "tasks"
-                ? "Nueva tarea"
-                : "Nuevo proyecto"}
-          </Button>
-        </div>
-        {notice && (
-          <Alert className="mb-5 border-primary/25 bg-primary/5">
-            <CheckCircle2 />
-            <AlertTitle>Listo</AlertTitle>
-            <AlertDescription className="flex items-center justify-between">
-              {notice}
-              <button onClick={() => setNotice("")} className="underline">
-                Cerrar
-              </button>
-            </AlertDescription>
-          </Alert>
-        )}
-        {storageError && (
-          <Alert variant="destructive" className="mb-5">
-            <AlertCircle />
-            <AlertTitle>No se pudo conservar la información</AlertTitle>
-            <AlertDescription>
-              Los cambios siguen disponibles en memoria. Revisa el
-              almacenamiento del navegador antes de cerrar.
-            </AlertDescription>
-          </Alert>
-        )}
-        <Tabs
-          value={tab}
-          onValueChange={(v) => {
-            setTab(v);
-            setSearch("");
-            setNotice("");
-          }}
-          className="gap-7"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-5">
-            <TabsList className="h-auto max-w-full justify-start overflow-x-auto bg-transparent p-0">
-              {[
-                { id: "overview", name: "Resumen", icon: LayoutDashboard },
-                { id: "projects", name: "Proyectos", icon: FolderKanban },
-                { id: "team", name: "Equipo", icon: Users },
-                { id: "tasks", name: "Tareas", icon: ListTodo },
-                { id: "settings", name: "Configuración", icon: Settings2 },
-              ].map((x) => (
-                <TabsTrigger
-                  key={x.id}
-                  value={x.id}
-                  className="gap-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <x.icon className="size-4" />
-                  {x.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            {[
+              {
+                id: "overview",
+                name: "Resumen",
+                icon: LayoutDashboard,
+                count: null,
+              },
+              {
+                id: "projects",
+                name: "Proyectos",
+                icon: FolderKanban,
+                count: stats.projects,
+              },
+              {
+                id: "team",
+                name: "Equipo",
+                icon: Users,
+                count: data.members.length,
+              },
+              {
+                id: "tasks",
+                name: "Tareas",
+                icon: ListTodo,
+                count: stats.pending,
+              },
+              {
+                id: "settings",
+                name: "Configuración",
+                icon: Settings2,
+                count: null,
+              },
+            ].map((x) => (
+              <TabsTrigger
+                key={x.id}
+                value={x.id}
+                className="workspace-nav-item"
+              >
+                <x.icon />
+                <span>{x.name}</span>
+                {x.count !== null && (
+                  <span className="nav-count">{x.count}</span>
+                )}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <div className="sidebar-bottom">
+            <div className="sidebar-progress">
+              <span className="sidebar-progress-icon">
+                <Sparkles />
+              </span>
+              <strong>El progreso se construye.</strong>
+              <p>
+                {stats.completed} de {stats.total} tareas completadas
+              </p>
+              <div className="sidebar-progress-track">
+                <span style={{ width: `${stats.progress}%` }} />
+              </div>
+              <span className="sidebar-progress-caption">
+                Cada entrega cuenta.
+              </span>
+            </div>
+            <div className="sidebar-profile">
+              <Avatar>
+                <AvatarFallback>GH</AvatarFallback>
+              </Avatar>
+              <div>
+                <strong>Gabriel Haro</strong>
+                <small>Mi espacio de trabajo</small>
+              </div>
+              <span className="online-dot" aria-label="Disponible" />
+            </div>
+          </div>
+        </aside>
+        <div className="workspace-body">
+          <header className="workspace-topbar">
+            <div className="topbar-breadcrumb">
+              <span className="topbar-home">
+                <Command />
+              </span>
+              <span>Workspace</span>
+              <ChevronRight />
+              <strong>
+                {
+                  {
+                    overview: "Resumen",
+                    projects: "Proyectos",
+                    team: "Equipo",
+                    tasks: "Tareas",
+                    settings: "Configuración",
+                  }[tab]
+                }
+              </strong>
+            </div>
+            <div className="topbar-right">
+              <span className="workspace-label">
+                <span />
+                Mi espacio personal
+              </span>
+              <Avatar>
+                <AvatarFallback>GH</AvatarFallback>
+              </Avatar>
+            </div>
+          </header>
+          <main className="workspace-main">
+            <div className="page-heading">
+              <div>
+                <p className="section-eyebrow">VISTA DE TRABAJO</p>
+                <h1>
+                  {
+                    {
+                      overview: "Resumen general",
+                      projects: "Tus proyectos",
+                      team: "Personas que suman",
+                      tasks: "Cada tarea cuenta",
+                      settings: "A tu manera",
+                    }[tab]
+                  }
+                </h1>
+                <p className="page-description">
+                  {
+                    {
+                      overview:
+                        "Una mirada clara a todo lo que estás construyendo.",
+                      projects: "Dale forma a tus ideas, de principio a fin.",
+                      team: "Un gran trabajo empieza con un gran equipo.",
+                      tasks:
+                        "Prioriza, organiza y lleva cada entrega a la meta.",
+                      settings: "Un espacio de trabajo que se adapta a ti.",
+                    }[tab]
+                  }
+                </p>
+              </div>
+              <Button
+                className="create-button"
+                onClick={() =>
+                  setEditor({
+                    kind:
+                      tab === "team"
+                        ? "member"
+                        : tab === "tasks"
+                          ? "task"
+                          : "project",
+                  })
+                }
+              >
+                <Plus />
+                {tab === "team"
+                  ? "Nuevo miembro"
+                  : tab === "tasks"
+                    ? "Nueva tarea"
+                    : "Nuevo proyecto"}
+              </Button>
+            </div>
+            {notice && (
+              <Alert className="mb-5 border-primary/25 bg-primary/5">
+                <CheckCircle2 />
+                <AlertTitle>Listo</AlertTitle>
+                <AlertDescription className="flex items-center justify-between">
+                  {notice}
+                  <button onClick={() => setNotice("")} className="underline">
+                    Cerrar
+                  </button>
+                </AlertDescription>
+              </Alert>
+            )}
+            {storageError && (
+              <Alert variant="destructive" className="mb-5">
+                <AlertCircle />
+                <AlertTitle>No se pudo conservar la información</AlertTitle>
+                <AlertDescription>
+                  Los cambios siguen disponibles en memoria. Revisa el
+                  almacenamiento del navegador antes de cerrar.
+                </AlertDescription>
+              </Alert>
+            )}
             {["projects", "team", "tasks"].includes(tab) && (
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute top-2.5 left-3 size-4 text-muted-foreground" />
-                <Input
-                  className="bg-card pl-9"
-                  placeholder="Buscar…"
-                  aria-label="Buscar registros"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
-                />
+              <div className="section-toolbar">
+                <div>
+                  <span className="toolbar-dot" />
+                  {
+                    {
+                      projects: "Portafolio de proyectos",
+                      team: "Directorio del equipo",
+                      tasks: "Tablero de entregas",
+                    }[tab]
+                  }
+                </div>
+                <div className="section-search">
+                  <Search />
+                  <Input
+                    placeholder="Buscar…"
+                    aria-label="Buscar registros"
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setPage(1);
+                    }}
+                  />
+                </div>
               </div>
             )}
-          </div>
-          <TabsContent value="overview" className="space-y-7">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {[
-                {
-                  label: "Total proyectos",
-                  value: stats.projects,
-                  sub: "Ideas convertidas en proyectos",
-                  icon: FolderKanban,
-                },
-                {
-                  label: "Tareas completadas",
-                  value: stats.completed,
-                  sub: `De ${stats.total} tareas registradas`,
-                  icon: CheckCheck,
-                },
-                {
-                  label: "Tareas pendientes",
-                  value: stats.pending,
-                  sub: "Pendientes o en progreso",
-                  icon: Clock3,
-                },
-                {
-                  label: "Miembros activos",
-                  value: stats.active,
-                  sub: `De ${data.members.length} personas en el equipo`,
-                  icon: Users,
-                },
-              ].map((s, i) => (
-                <Card
-                  key={s.label}
-                  className={
-                    i === 0
-                      ? "border-primary bg-primary text-primary-foreground shadow-none"
-                      : "shadow-none"
-                  }
-                >
-                  <CardHeader className="flex flex-row items-center justify-between pb-0">
-                    <CardTitle className="text-sm font-medium">
-                      {s.label}
-                    </CardTitle>
-                    <s.icon
-                      className={`size-5 ${i === 0 ? "opacity-70" : "text-primary"}`}
-                    />
+            <TabsContent
+              value="overview"
+              className="overview-content space-y-6"
+            >
+              <section className="overview-hero">
+                <div className="hero-copy">
+                  <span className="hero-kicker">
+                    <span />
+                    LA VISIÓN COMPLETA
+                  </span>
+                  <h2>
+                    Tu equipo,
+                    <br />
+                    <em>en sincronía.</em>
+                  </h2>
+                  <p>
+                    {stats.projects} proyectos. {stats.pending} tareas por
+                    completar.
+                    <br />
+                    Todo lo que necesitas, en el mismo lugar.
+                  </p>
+                  <button onClick={() => setTab("projects")}>
+                    Explorar proyectos <ArrowUpRight />
+                  </button>
+                </div>
+                <div className="hero-orbit" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="hero-progress">
+                  <div className="hero-progress-label">
+                    <CircleDot /> AVANCE DEL EQUIPO
+                  </div>
+                  <div
+                    className="hero-meter"
+                    style={{
+                      background: `conic-gradient(#fbbf81 ${stats.progress}%, #ffffff22 0)`,
+                    }}
+                  >
+                    <div>
+                      <strong>
+                        {stats.progress}
+                        <span>%</span>
+                      </strong>
+                      <small>completado</small>
+                    </div>
+                  </div>
+                  <p>
+                    <strong>{stats.completed}</strong> de {stats.total} tareas
+                    finalizadas
+                  </p>
+                </div>
+              </section>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {[
+                  {
+                    label: "Total proyectos",
+                    value: stats.projects,
+                    sub: "Ideas convertidas en proyectos",
+                    icon: FolderKanban,
+                  },
+                  {
+                    label: "Tareas completadas",
+                    value: stats.completed,
+                    sub: `De ${stats.total} tareas registradas`,
+                    icon: CheckCheck,
+                  },
+                  {
+                    label: "Tareas pendientes",
+                    value: stats.pending,
+                    sub: "Pendientes o en progreso",
+                    icon: Clock3,
+                  },
+                  {
+                    label: "Miembros activos",
+                    value: stats.active,
+                    sub: `De ${data.members.length} personas en el equipo`,
+                    icon: Users,
+                  },
+                ].map((s, i) => (
+                  <Card key={s.label} className={`metric-card metric-${i}`}>
+                    <CardHeader className="flex flex-row items-center justify-between pb-0">
+                      <CardTitle className="text-sm font-medium">
+                        {s.label}
+                      </CardTitle>
+                      <span className="metric-icon">
+                        <s.icon />
+                      </span>
+                    </CardHeader>
+                    <CardContent>
+                      <p
+                        className="mt-3 text-4xl font-semibold tracking-tight"
+                        data-testid={`metric-${i}`}
+                      >
+                        {s.value}
+                      </p>
+                      <p className="metric-description">{s.sub}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div className="grid gap-6 lg:grid-cols-[1.65fr_1fr]">
+                <Card className="shadow-none">
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <div className="panel-kicker">PORTAFOLIO</div>
+                      <CardTitle>Proyectos en foco</CardTitle>
+                      <CardDescription className="mt-2">
+                        El avance de tus próximos entregables.
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setTab("projects")}
+                    >
+                      Ver todos <ArrowUpRight className="size-4" />
+                    </Button>
                   </CardHeader>
-                  <CardContent>
-                    <p
-                      className="mt-3 text-4xl font-semibold tracking-tight"
-                      data-testid={`metric-${i}`}
-                    >
-                      {s.value}
-                    </p>
-                    <p
-                      className={`mt-2 text-xs ${i === 0 ? "opacity-80" : "text-muted-foreground"}`}
-                    >
-                      {s.sub}
-                    </p>
+                  <CardContent className="space-y-5">
+                    {data.projects.slice(0, 4).map((p, index) => (
+                      <div
+                        key={p.id}
+                        className={`focus-project project-color-${index % 4}`}
+                      >
+                        <span className="project-monogram">
+                          {p.name.slice(0, 2).toUpperCase()}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <button
+                            className="text-left text-sm font-semibold hover:underline"
+                            onClick={() => setDetail(p)}
+                          >
+                            {p.name}
+                          </button>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {p.category}
+                          </p>
+                        </div>
+                        <div className="w-28">
+                          <div className="mb-2 flex justify-between text-xs">
+                            <span className="text-muted-foreground">
+                              Avance
+                            </span>
+                            <span>{projectProgress(data, p.id)}%</span>
+                          </div>
+                          <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+                            <div
+                              className="h-full rounded-full bg-primary"
+                              style={{
+                                width: `${projectProgress(data, p.id)}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {!data.projects.length && empty("Aún no hay proyectos")}
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-            <div className="grid gap-6 lg:grid-cols-[1.65fr_1fr]">
-              <Card className="shadow-none">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle>Proyectos en foco</CardTitle>
-                    <CardDescription className="mt-2">
-                      El avance de tus próximos entregables.
+                <Card className="agenda-card">
+                  <CardHeader>
+                    <div className="panel-kicker">MANTÉN EL FOCO</div>
+                    <CardTitle>Agenda de entregas</CardTitle>
+                    <CardDescription>
+                      Lo próximo en la lista de tu equipo.
                     </CardDescription>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setTab("projects")}
-                  >
-                    Ver todos <ArrowUpRight className="size-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  {data.projects.slice(0, 4).map((p) => (
-                    <div
-                      key={p.id}
-                      className="flex items-center gap-4 border-b pb-4 last:border-0 last:pb-0"
-                    >
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
-                        <FolderKanban className="size-5" />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <button
-                          className="text-left text-sm font-semibold hover:underline"
-                          onClick={() => setDetail(p)}
-                        >
-                          {p.name}
-                        </button>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {p.category}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="agenda-list">
+                      {data.tasks
+                        .filter((t) => t.status !== "Completado")
+                        .sort((a, b) => a.dateline.localeCompare(b.dateline))
+                        .slice(0, 3)
+                        .map((t) => (
+                          <button
+                            key={t.id}
+                            className="agenda-item"
+                            onClick={() => {
+                              setTab("tasks");
+                              setSearch(t.description);
+                              setPage(1);
+                            }}
+                          >
+                            <span className="agenda-date">
+                              <strong>
+                                {new Date(t.dateline + "T12:00:00").getDate()}
+                              </strong>
+                              <small>
+                                {new Date(t.dateline + "T12:00:00")
+                                  .toLocaleDateString("es-PE", {
+                                    month: "short",
+                                  })
+                                  .replace(".", "")}
+                              </small>
+                            </span>
+                            <span className="agenda-text">
+                              <strong>{t.description}</strong>
+                              <small>
+                                {
+                                  data.projects.find(
+                                    (p) => p.id === t.projectId,
+                                  )?.name
+                                }
+                              </small>
+                            </span>
+                            <ChevronRight />
+                          </button>
+                        ))}
+                      {!stats.pending && (
+                        <p className="agenda-empty">
+                          <CheckCircle2 /> Todo al día. No hay tareas
+                          pendientes.
                         </p>
-                      </div>
-                      <div className="w-28">
-                        <div className="mb-2 flex justify-between text-xs">
-                          <span className="text-muted-foreground">Avance</span>
-                          <span>{projectProgress(data, p.id)}%</span>
-                        </div>
-                        <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                          <div
-                            className="h-full rounded-full bg-primary"
-                            style={{ width: `${projectProgress(data, p.id)}%` }}
-                          />
-                        </div>
+                      )}
+                    </div>
+                    <Button
+                      className="agenda-link"
+                      variant="ghost"
+                      onClick={() => setTab("tasks")}
+                    >
+                      Ver todas las tareas <ArrowRight />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+              <Card className="activity-card">
+                <CardHeader>
+                  <div className="panel-kicker">EN TU ESPACIO</div>
+                  <CardTitle>Actividad reciente</CardTitle>
+                  <CardDescription>
+                    Los cambios de tu espacio de trabajo.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-5 md:grid-cols-2">
+                  {data.activity.slice(0, 6).map((a) => (
+                    <div key={a.id} className="flex gap-3">
+                      <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />
+                      <div>
+                        <p className="text-sm">{a.text}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {new Date(a.at).toLocaleString("es-PE")}
+                        </p>
                       </div>
                     </div>
                   ))}
-                  {!data.projects.length && empty("Aún no hay proyectos")}
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="projects" className="projects-content">
+              <div className="mb-5 flex justify-between">
+                <h2 className="text-lg font-semibold">
+                  Todos los proyectos{" "}
+                  <span className="ml-2 text-sm font-normal text-muted-foreground">
+                    {projects.length}
+                  </span>
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  De la idea al resultado
+                </p>
+              </div>
+              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {projects.map((p, index) => (
+                  <Card
+                    key={p.id}
+                    className={`portfolio-card project-color-${index % 4}`}
+                  >
+                    <div className="portfolio-cover">
+                      <div className="cover-grid" aria-hidden="true" />
+                      <span className="cover-category">{p.category}</span>
+                      <span className="cover-monogram">
+                        {p.name
+                          .split(" ")
+                          .map((w) => w[0])
+                          .slice(0, 2)
+                          .join("")}
+                      </span>
+                      <span className="cover-number">
+                        {String(index + 1).padStart(2, "0")} / PROJECT
+                      </span>
+                      <span className="cover-symbol" aria-hidden="true">
+                        <ArrowUpRight />
+                      </span>
+                    </div>
+                    <CardHeader>
+                      <div className="mb-4 flex items-center justify-between">
+                        <span className="portfolio-category">{p.category}</span>
+                        <Status>{p.status}</Status>
+                      </div>
+                      <CardTitle className="text-lg">{p.name}</CardTitle>
+                      <CardDescription className="min-h-10 leading-relaxed">
+                        {p.description || "Sin descripción"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-2 flex justify-between text-xs text-muted-foreground">
+                        <span>Progreso de tareas</span>
+                        <strong className="text-foreground">
+                          {projectProgress(data, p.id)}%
+                        </strong>
+                      </div>
+                      <div className="mb-5 h-1.5 rounded-full bg-secondary">
+                        <div
+                          className="h-full rounded-full bg-primary"
+                          style={{ width: `${projectProgress(data, p.id)}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between border-t pt-4">
+                        <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Users className="size-4" />
+                          {p.memberIds.length} miembros
+                        </span>
+                        <Status>{p.priority}</Status>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDetail(p)}
+                        >
+                          Ver detalles <ArrowUpRight className="size-4" />
+                        </Button>
+                        {tools("project", p, p.name, p.id)}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {!projects.length && empty("No se encontraron proyectos")}
+              </div>
+            </TabsContent>
+            <TabsContent value="team" className="team-content">
               <Card className="shadow-none">
                 <CardHeader>
-                  <CardTitle>Un paso a la vez</CardTitle>
+                  <CardTitle>Miembros del equipo</CardTitle>
                   <CardDescription>
-                    Avance general de las tareas del equipo.
+                    {members.length} personas. El talento detrás de cada
+                    proyecto.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div
-                    className="mx-auto my-3 flex size-36 items-center justify-center rounded-full"
-                    style={{
-                      background: `conic-gradient(var(--primary) ${stats.progress}%, var(--secondary) 0)`,
-                    }}
-                  >
-                    <div className="flex size-28 flex-col items-center justify-center rounded-full bg-card">
-                      <span className="text-3xl font-semibold">
-                        {stats.progress}%
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        completado
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-6 flex justify-between border-t pt-4 text-sm">
-                    <span className="text-muted-foreground">
-                      Tareas por completar
-                    </span>
-                    <strong>{stats.pending}</strong>
-                  </div>
-                  <Button
-                    className="mt-5 w-full"
-                    variant="outline"
-                    onClick={() => setTab("tasks")}
-                  >
-                    Revisar tareas <ArrowRight className="size-4" />
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-            <Card className="shadow-none">
-              <CardHeader>
-                <CardTitle>Actividad reciente</CardTitle>
-                <CardDescription>
-                  Los cambios de tu espacio de trabajo.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-5 md:grid-cols-2">
-                {data.activity.slice(0, 6).map((a) => (
-                  <div key={a.id} className="flex gap-3">
-                    <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />
-                    <div>
-                      <p className="text-sm">{a.text}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {new Date(a.at).toLocaleString("es-PE")}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="projects">
-            <div className="mb-5 flex justify-between">
-              <h2 className="text-lg font-semibold">
-                Todos los proyectos{" "}
-                <span className="ml-2 text-sm font-normal text-muted-foreground">
-                  {projects.length}
-                </span>
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                De la idea al resultado
-              </p>
-            </div>
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {projects.map((p) => (
-                <Card
-                  key={p.id}
-                  className="shadow-none transition-shadow hover:shadow-md"
-                >
-                  <CardHeader>
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-primary">
-                        <FolderKanban className="size-5" />
-                      </span>
-                      <Status>{p.status}</Status>
-                    </div>
-                    <CardTitle className="text-lg">{p.name}</CardTitle>
-                    <CardDescription className="min-h-10 leading-relaxed">
-                      {p.description || "Sin descripción"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-2 flex justify-between text-xs text-muted-foreground">
-                      <span>Progreso de tareas</span>
-                      <strong className="text-foreground">
-                        {projectProgress(data, p.id)}%
-                      </strong>
-                    </div>
-                    <div className="mb-5 h-1.5 rounded-full bg-secondary">
-                      <div
-                        className="h-full rounded-full bg-primary"
-                        style={{ width: `${projectProgress(data, p.id)}%` }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between border-t pt-4">
-                      <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Users className="size-4" />
-                        {p.memberIds.length} miembros
-                      </span>
-                      <Status>{p.priority}</Status>
-                    </div>
-                    <div className="mt-3 flex items-center justify-between">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setDetail(p)}
-                      >
-                        Ver detalles <ArrowUpRight className="size-4" />
-                      </Button>
-                      {tools("project", p, p.name, p.id)}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {!projects.length && empty("No se encontraron proyectos")}
-            </div>
-          </TabsContent>
-          <TabsContent value="team">
-            <Card className="shadow-none">
-              <CardHeader>
-                <CardTitle>Miembros del equipo</CardTitle>
-                <CardDescription>
-                  {members.length} personas. El talento detrás de cada proyecto.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {members.map((m) => (
-                  <div
-                    key={m.userId}
-                    className="flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4"
-                  >
-                    <div className="flex items-center gap-4">
-                      <Avatar className="size-11">
-                        <AvatarFallback className="bg-secondary text-primary">
-                          {initials(m.name)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold text-sm">{m.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {m.position} · {m.role}
-                        </p>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {m.email} · {m.phone}
-                        </p>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {data.projects.find((p) => p.id === m.projectId)
-                            ?.name || "Sin proyecto principal"}{" "}
-                          · Nacimiento: {date(m.birthdate)}
-                        </p>
+                <CardContent className="space-y-3">
+                  {members.map((m) => (
+                    <div key={m.userId} className="team-member">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="size-11">
+                          <AvatarFallback className="bg-secondary text-primary">
+                            {initials(m.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-sm">{m.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {m.position} · {m.role}
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {m.email} · {m.phone}
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {data.projects.find((p) => p.id === m.projectId)
+                              ?.name || "Sin proyecto principal"}{" "}
+                            · Nacimiento: {date(m.birthdate)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Status>{m.isActive ? "Activo" : "Inactivo"}</Status>
+                        {tools("member", m, m.name, m.userId)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Status>{m.isActive ? "Activo" : "Inactivo"}</Status>
-                      {tools("member", m, m.name, m.userId)}
-                    </div>
+                  ))}
+                  {!members.length && empty("No se encontraron miembros")}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="tasks" className="tasks-content">
+              <Card className="shadow-none">
+                <CardHeader className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <CardTitle>Gestión de tareas</CardTitle>
+                    <CardDescription className="mt-2">
+                      Cada entrega tiene su lugar.{" "}
+                      {
+                        selected.filter((id) => tasks.some((t) => t.id === id))
+                          .length
+                      }{" "}
+                      seleccionadas.
+                    </CardDescription>
                   </div>
-                ))}
-                {!members.length && empty("No se encontraron miembros")}
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="tasks">
-            <Card className="shadow-none">
-              <CardHeader className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <CardTitle>Gestión de tareas</CardTitle>
-                  <CardDescription className="mt-2">
-                    Cada entrega tiene su lugar.{" "}
-                    {
-                      selected.filter((id) => tasks.some((t) => t.id === id))
-                        .length
-                    }{" "}
-                    seleccionadas.
-                  </CardDescription>
-                </div>
-                <div className="w-44">
-                  <Choice
-                    id="status-filter"
-                    value={filter}
-                    onChange={(v) => {
-                      setFilter(v);
-                      setPage(1);
-                    }}
-                    placeholder="Todos los estados"
-                    options={["Pendiente", "En progreso", "Completado"].map(
-                      (x) => ({ value: x, label: x }),
-                    )}
-                  />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableCaption>
-                    Lista de todas las tareas de tus proyectos
-                  </TableCaption>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>
-                        <Checkbox
-                          aria-label="Seleccionar página"
-                          checked={
-                            visible.length > 0 &&
-                            visible.every((t) => selected.includes(t.id))
-                          }
-                          onCheckedChange={(v) =>
-                            setSelected(
-                              v
-                                ? [
-                                    ...new Set([
-                                      ...selected,
-                                      ...visible.map((t) => t.id),
-                                    ]),
-                                  ]
-                                : selected.filter(
-                                    (id) => !visible.some((t) => t.id === id),
-                                  ),
-                            )
-                          }
-                        />
-                      </TableHead>
-                      {[
-                        "Tarea",
-                        "Proyecto",
-                        "Estado",
-                        "Prioridad",
-                        "Asignado a",
-                        "Fecha límite",
-                        "Acciones",
-                      ].map((h) => (
-                        <TableHead key={h}>{h}</TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {visible.map((t) => (
-                      <TableRow key={t.id}>
-                        <TableCell>
+                  <div className="w-44">
+                    <Choice
+                      id="status-filter"
+                      value={filter}
+                      onChange={(v) => {
+                        setFilter(v);
+                        setPage(1);
+                      }}
+                      placeholder="Todos los estados"
+                      options={["Pendiente", "En progreso", "Completado"].map(
+                        (x) => ({ value: x, label: x }),
+                      )}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableCaption>
+                      Lista de todas las tareas de tus proyectos
+                    </TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>
                           <Checkbox
-                            aria-label={`Seleccionar ${t.description}`}
-                            checked={selected.includes(t.id)}
+                            aria-label="Seleccionar página"
+                            checked={
+                              visible.length > 0 &&
+                              visible.every((t) => selected.includes(t.id))
+                            }
                             onCheckedChange={(v) =>
                               setSelected(
                                 v
-                                  ? [...selected, t.id]
-                                  : selected.filter((id) => id !== t.id),
+                                  ? [
+                                      ...new Set([
+                                        ...selected,
+                                        ...visible.map((t) => t.id),
+                                      ]),
+                                    ]
+                                  : selected.filter(
+                                      (id) => !visible.some((t) => t.id === id),
+                                    ),
                               )
                             }
                           />
-                        </TableCell>
-                        <TableCell className="min-w-48 whitespace-normal font-medium">
-                          {t.description}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {
-                            data.projects.find((p) => p.id === t.projectId)
-                              ?.name
-                          }
-                        </TableCell>
-                        <TableCell>
-                          <Status>{t.status}</Status>
-                        </TableCell>
-                        <TableCell>
-                          <Status>{t.priority}</Status>
-                        </TableCell>
-                        <TableCell>
-                          {data.members.find((m) => m.userId === t.userId)
-                            ?.name || "Sin asignar"}
-                        </TableCell>
-                        <TableCell>{date(t.dateline)}</TableCell>
-                        <TableCell>
-                          {tools("task", t, t.description, t.id)}
-                        </TableCell>
+                        </TableHead>
+                        {[
+                          "Tarea",
+                          "Proyecto",
+                          "Estado",
+                          "Prioridad",
+                          "Asignado a",
+                          "Fecha límite",
+                          "Acciones",
+                        ].map((h) => (
+                          <TableHead key={h}>{h}</TableHead>
+                        ))}
                       </TableRow>
-                    ))}
-                    {!visible.length && (
-                      <TableRow>
-                        <TableCell
-                          colSpan={8}
-                          className="py-12 text-center text-muted-foreground"
-                        >
-                          No se encontraron tareas.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-                <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t pt-5">
-                  <p className="text-xs text-muted-foreground">
-                    {tasks.length
-                      ? `${(current - 1) * pageSize + 1}–${Math.min(current * pageSize, tasks.length)}`
-                      : "0"}{" "}
-                    de {tasks.length} tareas
-                  </p>
-                  <Pagination className="mx-0 w-auto">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          text="Anterior"
-                          href="#"
-                          aria-label="Página anterior"
-                          aria-disabled={current === 1}
-                          className={
-                            current === 1
-                              ? "pointer-events-none opacity-40"
-                              : ""
-                          }
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setPage(Math.max(1, current - 1));
-                          }}
-                        />
-                      </PaginationItem>
-                      {Array.from({ length: pages }, (_, i) => (
-                        <PaginationItem key={i}>
-                          <PaginationLink
+                    </TableHeader>
+                    <TableBody>
+                      {visible.map((t) => (
+                        <TableRow key={t.id}>
+                          <TableCell>
+                            <Checkbox
+                              aria-label={`Seleccionar ${t.description}`}
+                              checked={selected.includes(t.id)}
+                              onCheckedChange={(v) =>
+                                setSelected(
+                                  v
+                                    ? [...selected, t.id]
+                                    : selected.filter((id) => id !== t.id),
+                                )
+                              }
+                            />
+                          </TableCell>
+                          <TableCell className="min-w-48 whitespace-normal font-medium">
+                            {t.description}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {
+                              data.projects.find((p) => p.id === t.projectId)
+                                ?.name
+                            }
+                          </TableCell>
+                          <TableCell>
+                            <Status>{t.status}</Status>
+                          </TableCell>
+                          <TableCell>
+                            <Status>{t.priority}</Status>
+                          </TableCell>
+                          <TableCell>
+                            {data.members.find((m) => m.userId === t.userId)
+                              ?.name || "Sin asignar"}
+                          </TableCell>
+                          <TableCell>{date(t.dateline)}</TableCell>
+                          <TableCell>
+                            {tools("task", t, t.description, t.id)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {!visible.length && (
+                        <TableRow>
+                          <TableCell
+                            colSpan={8}
+                            className="py-12 text-center text-muted-foreground"
+                          >
+                            No se encontraron tareas.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t pt-5">
+                    <p className="text-xs text-muted-foreground">
+                      {tasks.length
+                        ? `${(current - 1) * pageSize + 1}–${Math.min(current * pageSize, tasks.length)}`
+                        : "0"}{" "}
+                      de {tasks.length} tareas
+                    </p>
+                    <Pagination className="mx-0 w-auto">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            text="Anterior"
                             href="#"
-                            aria-label={`Página ${i + 1}`}
-                            isActive={current === i + 1}
+                            aria-label="Página anterior"
+                            aria-disabled={current === 1}
+                            className={
+                              current === 1
+                                ? "pointer-events-none opacity-40"
+                                : ""
+                            }
                             onClick={(e) => {
                               e.preventDefault();
-                              setPage(i + 1);
+                              setPage(Math.max(1, current - 1));
                             }}
-                          >
-                            {i + 1}
-                          </PaginationLink>
+                          />
                         </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationNext
-                          text="Siguiente"
-                          href="#"
-                          aria-label="Página siguiente"
-                          aria-disabled={current === pages}
-                          className={
-                            current === pages
-                              ? "pointer-events-none opacity-40"
-                              : ""
-                          }
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setPage(Math.min(pages, current + 1));
-                          }}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="settings">
-            <SettingsForm
-              value={data.settings}
-              onSave={async (settings) => {
-                await delay();
-                setData((prev) => ({
-                  ...prev,
-                  settings,
-                  activity: [
-                    {
-                      id: uid(),
-                      text: "Preferencias del espacio actualizadas.",
-                      at: new Date().toISOString(),
-                    },
-                    ...prev.activity,
-                  ].slice(0, 30),
-                }));
-                setNotice(
-                  "Configuración guardada. Se aplicaron el tema y el tamaño de página.",
-                );
-              }}
-            />
-          </TabsContent>
-        </Tabs>
-        <footer className="mt-10 flex flex-wrap justify-between gap-2 border-t pt-5 text-xs text-muted-foreground">
-          <span>nexo / Laboratorio 11</span>
-          <span>Next.js · Tailwind CSS · shadcn/ui</span>
-        </footer>
-      </main>
+                        {Array.from({ length: pages }, (_, i) => (
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              href="#"
+                              aria-label={`Página ${i + 1}`}
+                              isActive={current === i + 1}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setPage(i + 1);
+                              }}
+                            >
+                              {i + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                          <PaginationNext
+                            text="Siguiente"
+                            href="#"
+                            aria-label="Página siguiente"
+                            aria-disabled={current === pages}
+                            className={
+                              current === pages
+                                ? "pointer-events-none opacity-40"
+                                : ""
+                            }
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setPage(Math.min(pages, current + 1));
+                            }}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="settings" className="settings-content">
+              <SettingsForm
+                value={data.settings}
+                onSave={async (settings) => {
+                  await delay();
+                  setData((prev) => ({
+                    ...prev,
+                    settings,
+                    activity: [
+                      {
+                        id: uid(),
+                        text: "Preferencias del espacio actualizadas.",
+                        at: new Date().toISOString(),
+                      },
+                      ...prev.activity,
+                    ].slice(0, 30),
+                  }));
+                  setNotice(
+                    "Configuración guardada. Se aplicaron el tema y el tamaño de página.",
+                  );
+                }}
+              />
+            </TabsContent>
+            <footer className="mt-10 flex flex-wrap justify-between gap-2 border-t pt-5 text-xs text-muted-foreground">
+              <span className="footer-brand">
+                nexo. <span>Hecho para avanzar.</span>
+              </span>
+              <span>Diseñado por Gabriel Haro · 2026</span>
+            </footer>
+          </main>
+        </div>
+      </Tabs>
       {editor && (
         <EntityForm
           key={`${editor.kind}-${editor.entity ? ("id" in editor.entity ? editor.entity.id : editor.entity.userId) : "new"}`}
@@ -1045,9 +1246,9 @@ function SettingsForm({
                   id="theme"
                   value={draft.theme}
                   options={[
-                    { value: "teal", label: "Verde petróleo" },
-                    { value: "indigo", label: "Índigo" },
-                    { value: "rose", label: "Rosa" },
+                    { value: "teal", label: "Cobalto y medianoche" },
+                    { value: "indigo", label: "Ciruela y lavanda" },
+                    { value: "rose", label: "Terracota y arena" },
                   ]}
                   onChange={(v) => {
                     if (v) setDraft({ ...draft, theme: v });
